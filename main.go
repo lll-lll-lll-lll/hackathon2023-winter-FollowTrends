@@ -42,8 +42,7 @@ func main() {
 						log.Print(err)
 					}
 				case *linebot.StickerMessage:
-					replyMessage := fmt.Sprintf(
-						"sticker id is %s, stickerResourceType is %s", message.StickerID, message.StickerResourceType)
+					replyMessage := fmt.Sprintf("ステキなスタンプをありがとうございます。")
 					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
 						log.Print(err)
 					}
