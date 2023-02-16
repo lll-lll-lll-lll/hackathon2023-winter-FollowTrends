@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+const NotFoundArticle = "カテゴリに属している記事が存在しませんでした"
+
 // PRTimes APIを叩いたり、周りの処理を担当する
 type PRTimes struct {
 	Response Items `json:"response"`
@@ -31,9 +33,13 @@ func (i Item) String() string {
 type Items []Item
 
 // String スライスのItem構造体を文字列にするメソッド
-func (i Items) String() string {
+func (it Items) String() string {
 	var s string
-	for i, v := range i {
+	if len(it) == 0 {
+		return NotFoundArticle
+	}
+
+	for i, v := range it {
 		if i == 3 {
 			return s
 		}
