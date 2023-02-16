@@ -48,7 +48,7 @@ func main() {
 			if event.Type == linebot.EventTypeMessage {
 				switch message := event.Message.(type) {
 				case *linebot.TextMessage:
-					res, err := openaiClinet.Do(message.Text)
+					res, err := openaiClinet.GenerateSentence(message.Text)
 					if err != nil {
 						log.Println(err)
 						w.WriteHeader(http.StatusBadRequest)
@@ -56,15 +56,23 @@ func main() {
 							log.Print(err)
 							return
 						}
-
 					}
-					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(res.Choices[0].Text)).Do(); err != nil {
+
+					keyWords, err := openaiClinet.ExtractKeyWords(res.Choices[0].Text)
+					if err != nil {
+						log.Println(err)
+						return
+					}
+
+					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(keyWords.Choices[0].Text)).Do(); err != nil {
 						log.Print(err)
+						return
 					}
 				case *linebot.StickerMessage:
 					replyMessage := fmt.Sprintf("ステキなスタンプをありがとうございます。")
 					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(replyMessage)).Do(); err != nil {
 						log.Print(err)
+						return
 					}
 				case *linebot.FlexMessage:
 					items, err := prtimesClient.GetItems("1")
@@ -73,10 +81,12 @@ func main() {
 						w.WriteHeader(http.StatusBadRequest)
 						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("入力文字列に間違いがあります")).Do(); err != nil {
 							log.Print(err)
+							return
 						}
 					}
 					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(items.String())).Do(); err != nil {
 						log.Print(err)
+						return
 					}
 				}
 			}
