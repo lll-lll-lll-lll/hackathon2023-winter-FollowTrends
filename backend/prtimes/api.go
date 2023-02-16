@@ -4,7 +4,7 @@ package prtimes
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 )
@@ -52,18 +52,18 @@ func (it Items) String() string {
 // この時のフォーマットはYYYY-MM-DD
 func GetFromDate() string {
 	now := time.Now()
-	from_date := now.AddDate(0, 0, -3)
-	return from_date.Format("2023-01-01")
+	fromDate := now.AddDate(0, 0, -4)
+	return fromDate.Format("2006-01-02")
 }
 
 // GetItems PRTimes APIを叩いてItem構造体を返す
 func (pt *PRTimes) GetItems(categoryID string) (Items, error) {
 	client := &http.Client{}
 	// 3日前の日付を取得
-	from_date := GetFromDate()
+	fromDate := GetFromDate()
 	// PRTimes APIを叩く
 	// カテゴリーIDと3日前の日付を指定
-	url := fmt.Sprintf("https://hackathon.stg-prtimes.net/api/categories/%s/releases?from_date=%s", categoryID, from_date)
+	url := fmt.Sprintf("https://hackathon.stg-prtimes.net/api/categories/%s/releases?from_date=%s", categoryID, fromDate)
 
 	req, err := http.NewRequest("GET", url, nil)
 
@@ -74,7 +74,7 @@ func (pt *PRTimes) GetItems(categoryID string) (Items, error) {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
