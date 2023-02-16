@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    tty: true
+    ports:
+      - 8080:8080
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/go/src/app
+
+  db:
+    container_name: db
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    image: postgres
+    environment:
+      - POSTGRES_USER=app_user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=app_db
+    tty: true
+    ports:
+      - "5432:5432"
+    restart: always
+    user: root
+    volumes:
+      - ./db/init:/docker-entrypoint-initdb.d
+
+  pgweb:
+    image: sosedoff/pgweb
+    container_name: pgweb
+    ports:
+      - "8081:8081"
+    environment:
+      - DATABASE_URL=postgres://app_user:password@postgres:5432/app_db?sslmode=disable
+    links:
+      - db:postgres
+    restart: always
+    depends_on:
+      - db

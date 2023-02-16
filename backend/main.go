@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/PRTIMES/nassm/db"
 	"github.com/PRTIMES/nassm/prtimes"
 	"github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
@@ -24,6 +25,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	postgresql := db.NewPostgreSql()
+	postgresql.Init()
+	defer postgresql.Db.Close()
 
 	// PRTimes API 周りの処理を待った構造体を初期化
 	prtimes := prtimes.New()
