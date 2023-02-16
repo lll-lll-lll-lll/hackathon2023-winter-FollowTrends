@@ -32,7 +32,10 @@ type Items []Item
 // String スライスのItem構造体を文字列にするメソッド
 func (i Items) String() string {
 	var s string
-	for _, v := range i {
+	for i, v := range i {
+		if i == 3 {
+			return s
+		}
 		s += v.String()
 	}
 	return s
