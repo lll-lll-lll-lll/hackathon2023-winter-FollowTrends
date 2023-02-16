@@ -28,50 +28,41 @@ func (i Item) String() string {
 // Items Item構造体のスライス
 type Items []Item
 
-// String スライスのItem構造体を文字列にするメソッド
-func (mt *Match) GetItems(data [][]string, compare []string) (Items, error) {
-	fmt.Println("GetItems/Match")
-	// // 検索対象の配列
-	// data := [][]string{
-	// 	{"apple", "banana", "cherry"},
-	// 	{"apricot", "blackberry", "cherry", "date"},
-	// 	{"avocado", "blackberry", "cherry", "date", "elderberry", "fig"},
-	// }
+func (m *Match) GetItems(data [][]string, searchTerms []string) (Items, error) {
+	// 各データ配列ごとに、検索条件に一致した要素の数を格納する配列を初期化する
+	matchCounts := make([]int, len(data))
 
-	// // 比較対象の配列
-	// compare := []string{"cherry", "date", "fig"}
-	fmt.Println("data:", data)
-	fmt.Println("compare:", compare)
-	// 一番近しいデータを格納する変数を初期化
-	var closestMatch string
-
-	// 一番近しいデータを探す
-	for _, d := range data {
-		// 全てのcompareの要素がdataの中に含まれるかをチェックする
-		foundAll := true
-		for _, c := range compare {
-			if !contains(d, c) {
-				foundAll = false
-				break
+	// データ配列をループし、各要素が検索条件に含まれるかどうかを確認し、一致する要素があれば、対応するmatchCountsの要素を1つ増やす
+	for i, d := range data {
+		for _, term := range searchTerms {
+			if contains(d, term) {
+				matchCounts[i]++
 			}
 		}
-		// 全てのcompareの要素がdataの中に含まれる場合、一番近しいデータとして格納する
-		if foundAll {
-			closestMatch = d[0]
-			break
+	}
+
+	// matchCountsの中で最大の値を取得し、最大値を持つ要素のインデックスを取得する
+	maxCount := 0
+	maxCountIndex := -1
+	for i, count := range matchCounts {
+		if count > maxCount {
+			maxCount = count
+			maxCountIndex = i
 		}
 	}
 
-	// closestMatchが空でなければ、結果を出力する
-	if closestMatch != "" {
-		fmt.Printf("一番近しいデータ: %s\n", closestMatch)
+
+	// マッチしたカウント最大の値が 0 以上かどうかを判定しておく
+	if maxCount >= 0 {
+		fmt.Println("一番近しいデータ: ", data[maxCountIndex])
+		fmt.Println("一番近しいデータ: ", matchCounts)
+		return nil, nil
 	} else {
 		fmt.Println("一件も見つかりませんでした。")
+		return nil, nil
 	}
-	return nil, nil
 }
 
-// sliceに要素が含まれるかを判定する関数
 func contains(slice []string, item string) bool {
 	for _, s := range slice {
 		if s == item {
@@ -80,3 +71,80 @@ func contains(slice []string, item string) bool {
 	}
 	return false
 }
+
+
+	// ruby で書くとこんな感じ
+	// data.each_with_index do |d, i|
+	// 	searchTerms.each do |term|
+	// 		if d.include?(term)
+	// 			matchCounts[i] += 1
+	// 		end
+	// 	end
+	// end
+
+	// ruby で書くとこんな感じ
+	// maxCounts の中で最大の値を取得する（複数ある場合は最初の値）
+	//  maxCountIndex = matchCounts.each_with_index.max[0]
+
+	// ruby で書くとこんな感じ
+	// マッチしたカウント最大の値が 0 以上かどうかを判定しておく
+	// if matchCounts[maxCountIndex] > 0
+	// 	puts "一番近しいデータ: #{data[maxCountIndex]}"
+	// else
+	// 	puts "一件も見つかりませんでした。"
+	// end
+
+
+
+
+// // GetItemsは、検索対象のデータ配列から、指定された比較配列に一致するアイテムを探し、
+// // 見つかった場合にはそのアイテムを返します。
+// func (m *Match) GetItems(data [][]string, searchTerms []string) (Items, error) {
+// 	// 各データ配列ごとに、検索条件に一致した要素の数を格納する配列を初期化する
+// 	matchCounts := make([]int, len(data))
+
+// 	// 各データ配列ごとに、検索条件に一致する要素の数をカウントする
+// 	for i, d := range data {
+// 		for _, term := range searchTerms {
+// 			fmt.Printf("d: %v, term: %v", d, term)
+// 			if contains(d, term) {
+// 				matchCounts[i]++
+// 			}
+// 		}
+// 	}
+
+// 	// マッチした数が最も多い配列番号を取得する
+// 	maxCountIndex := 0
+// 	for i := 1; i < len(data); i++ {
+// 		if matchCounts[i] > matchCounts[maxCountIndex] {
+// 			maxCountIndex = i
+// 		}
+// 	}
+
+// 	fmt.Printf("マッチした数: %v", matchCounts)
+// 	// マッチした数が最も多い配列を出力する
+// 	if matchCounts[maxCountIndex] > 0 {
+// 		fmt.Printf("一番近しいデータ: %s\n", data[maxCountIndex])
+// 	} else {
+// 		fmt.Println("一件も見つかりませんでした。")
+// 	}
+
+// 	m.Response = Items{
+// 		Item{
+// 			Title: data[maxCountIndex][0],
+// 			URL:   data[maxCountIndex][1],
+// 		},
+// 	}
+// 	// マッチした数が最も多い配列を返す
+// 	return m.Response, nil
+// }
+
+// // sliceに要素が含まれるかを判定する関数
+// func contains(slice []string, item string) bool {
+// 	for _, s := range slice {
+// 		if s == item {
+// 			return true
+// 		}
+// 	}
+// 	return false
+// }

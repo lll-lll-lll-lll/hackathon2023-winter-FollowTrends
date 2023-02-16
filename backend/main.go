@@ -111,6 +111,8 @@ func matchHandler(w http.ResponseWriter, req *http.Request) {
 		{"apple", "banana", "cherry"},
 		{"apricot", "blackberry", "cherry", "date"},
 		{"avocado", "blackberry", "cherry", "date", "elderberry", "fig"},
+		{"avocado", "blackberry", "cherry", "date", "elderberry", "fig", "grape"},
+		{"avocado", "blackberry", "cherry", "date", "elderberry", "fig", "fig"},
 	}
 
 	// 比較対象の配列
