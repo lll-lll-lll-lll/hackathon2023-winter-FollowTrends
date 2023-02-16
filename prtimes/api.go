@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 )
 
 // PRTimes APIを叩いたり、周りの処理を担当する
@@ -41,10 +42,23 @@ func (i Items) String() string {
 	return s
 }
 
+// 現在時刻を取得し、3日前の日付を返す。
+// この時のフォーマットはYYYY-MM-DD
+func GetFromDate() string {
+	now := time.Now()
+	from_date := now.AddDate(0, 0, -3)
+	return from_date.Format("2023-01-01")
+}
+
 // GetItems PRTimes APIを叩いてItem構造体を返す
 func (pt *PRTimes) GetItems(categoryID string) (Items, error) {
 	client := &http.Client{}
-	url := fmt.Sprintf("https://hackathon.stg-prtimes.net/api/categories/%s/releases?from_date=2023-02-13", categoryID)
+	// 3日前の日付を取得
+	from_date := GetFromDate()
+	// PRTimes APIを叩く
+	// カテゴリーIDと3日前の日付を指定
+	url := fmt.Sprintf("https://hackathon.stg-prtimes.net/api/categories/%s/releases?from_date=%s", categoryID, from_date)
+
 	req, err := http.NewRequest("GET", url, nil)
 
 	req.Header.Set("Authorization", "Bearer b655dffbe1b2c82ca882874670cb110995c6604151e1b781cf5c362563eb4e12")
