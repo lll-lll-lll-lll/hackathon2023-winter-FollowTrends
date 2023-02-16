@@ -8,3 +8,5 @@ require (
 	github.com/lib/pq v1.10.7
 	github.com/line/line-bot-sdk-go/v7 v7.19.0
 )
+
+require github.com/sashabaranov/go-gpt3 v1.1.0 // indirect
