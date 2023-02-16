@@ -9,6 +9,7 @@ import (
 	"github.com/PRTIMES/nassm/db"
 	"github.com/PRTIMES/nassm/openai"
 	"github.com/PRTIMES/nassm/prtimes"
+	"github.com/PRTIMES/nassm/match"
 	"github.com/joho/godotenv"
 	"github.com/line/line-bot-sdk-go/v7/linebot"
 )
@@ -92,8 +93,29 @@ func main() {
 			}
 		}
 	})
+
+	http.HandleFunc("/", matchHandler)
+
 	log.Print("サーバスタート")
 	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// Path: backend/match/match.go
+func matchHandler(w http.ResponseWriter, req *http.Request) {
+	// マッチング処理を待った構造体を初期化
+	match := match.New()
+	// 検索対象の配列
+	var data = [][]string{
+		{"apple", "banana", "cherry"},
+		{"apricot", "blackberry", "cherry", "date"},
+		{"avocado", "blackberry", "cherry", "date", "elderberry", "fig"},
+	}
+
+	// 比較対象の配列
+	var compare = []string{"cherry", "date", "fig"}
+
+	// マッチング処理を行う
+	match.GetItems(data, compare)
 }
