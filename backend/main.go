@@ -7,6 +7,7 @@ import (
 	"os"
 
 	"github.com/PRTIMES/nassm/db"
+	"github.com/PRTIMES/nassm/keyword"
 	"github.com/PRTIMES/nassm/openai"
 	"github.com/PRTIMES/nassm/prtimes"
 	"github.com/joho/godotenv"
@@ -26,9 +27,9 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	postgresql := db.NewPostgreSql()
-	postgresql.Init()
-	defer postgresql.Db.Close()
+	postgre := db.NewPostgreSql()
+	postgre.Init()
+	defer postgre.Db.Close()
 
 	// OpenAI, PRTimesのクライアントの初期化
 	prtimesClient := prtimes.New()
@@ -64,7 +65,30 @@ func main() {
 						return
 					}
 
-					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(keyWords.Choices[0].Text)).Do(); err != nil {
+					data, err := postgre.GetData()
+					if err != nil {
+						log.Println(err)
+						return
+					}
+					//自前で用意したキーワード一覧
+					splitedKeyWords := db.SplitKeyWord(data)
+
+					// 自動生成されたキーワード一覧
+					splitedGeneratedWord := openai.SplitWord(keyWords.Choices[0].Text)
+
+					idx, err := keyword.Compare(splitedKeyWords, splitedGeneratedWord)
+					if err != nil {
+						log.Println(err)
+						return
+					}
+					if idx == 0 {
+						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage("キーワードに一致する記事はありません")).Do(); err != nil {
+							log.Print(err)
+							return
+						}
+					}
+
+					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(data[idx].URL)).Do(); err != nil {
 						log.Print(err)
 						return
 					}
@@ -74,6 +98,7 @@ func main() {
 						log.Print(err)
 						return
 					}
+				//TODO: 今は1を決め打ちで入力しているので、FlexMessageの種類によってGetItemsメソッドの引数が変数化してほしいs
 				case *linebot.FlexMessage:
 					items, err := prtimesClient.GetItems("1")
 					if err != nil {

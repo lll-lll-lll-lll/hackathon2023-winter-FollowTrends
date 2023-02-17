@@ -9,7 +9,8 @@ type Item struct {
 	URL   string `json:"url"`
 }
 
-func Compare(lineMessageKeyWords [][]string, searchTerms []string) ([]string, error) {
+// Compare 一番マッチした
+func Compare(lineMessageKeyWords [][]string, searchTerms []string) (int, error) {
 	// 各データ配列ごとに、検索条件に一致した要素の数を格納する配列を初期化する
 	matchCounts := make([]int, len(lineMessageKeyWords))
 
@@ -24,7 +25,7 @@ func Compare(lineMessageKeyWords [][]string, searchTerms []string) ([]string, er
 
 	// matchCountsの中で最大の値を取得し、最大値を持つ要素のインデックスを取得する
 	maxCount := 0
-	maxCountIndex := -1
+	maxCountIndex := 0
 	for i, count := range matchCounts {
 		if count > maxCount {
 			maxCount = count
@@ -34,9 +35,9 @@ func Compare(lineMessageKeyWords [][]string, searchTerms []string) ([]string, er
 
 	// マッチしたカウント最大の値が 0 以上かどうかを判定しておく
 	if maxCount >= 0 {
-		return lineMessageKeyWords[maxCountIndex], nil
+		return maxCountIndex, nil
 	} else {
-		return nil, errors.New("一件も見つかりませんでした")
+		return 0, errors.New("一件も見つかりませんでした")
 	}
 }
 

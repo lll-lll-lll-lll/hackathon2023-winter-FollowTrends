@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"regexp"
+	"strings"
 
 	gogpt "github.com/sashabaranov/go-gpt3"
 )
@@ -53,7 +54,7 @@ func (oa *OpenAI) ExtractKeyWords(text string) (gogpt.CompletionResponse, error)
 	if err != nil {
 		return gogpt.CompletionResponse{}, fmt.Errorf("自動生成した文章からキーワードを抽出できませんでした。%w", err)
 	}
-	convertedText, err := GetRegexKeyWords(resp.Choices[0].Text)
+	convertedText, err := ConvertRegexKeyWords(resp.Choices[0].Text)
 	if err != nil {
 		return gogpt.CompletionResponse{}, fmt.Errorf("キーワードを正規表現で整形するコンバート時に失敗しました%w", err)
 	}
@@ -61,8 +62,8 @@ func (oa *OpenAI) ExtractKeyWords(text string) (gogpt.CompletionResponse, error)
 	return resp, nil
 }
 
-// GetRegexKeyWords 正規表現でKeywords以降の文字列を取得
-func GetRegexKeyWords(keyWords string) (string, error) {
+// ConvertRegexKeyWords 正規表現でKeywords以降の文字列を取得
+func ConvertRegexKeyWords(keyWords string) (string, error) {
 	re, err := regexp.Compile(`Keywords:(.*)`)
 	if err != nil {
 		return "", err
@@ -71,5 +72,9 @@ func GetRegexKeyWords(keyWords string) (string, error) {
 	if len(match) > 1 {
 		return match[1], nil
 	}
-	return match[0], nil
+	return "", nil
+}
+
+func SplitWord(text string) []string {
+	return strings.Split(text, ",")
 }

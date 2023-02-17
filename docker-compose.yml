@@ -31,16 +31,15 @@ services:
     user: root
     volumes:
       - ./db/init:/docker-entrypoint-initdb.d
-
-  pgweb:
-    image: sosedoff/pgweb
-    container_name: pgweb
-    ports:
-      - "8081:8081"
-    environment:
-      - DATABASE_URL=postgres://app_user:password@postgres:5432/app_db?sslmode=disable
-    links:
-      - db:postgres
-    restart: always
-    depends_on:
-      - db
+  # pgweb:
+  #   image: sosedoff/pgweb
+  #   container_name: pgweb
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - DATABASE_URL=postgres://app_user:password@postgres:5432/app_db?sslmode=disable
+  #   links:
+  #     - db:postgres
+  #   restart: always
+  #   depends_on:
+  #     - db
