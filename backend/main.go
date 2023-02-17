@@ -92,6 +92,7 @@ func main() {
 			}
 		}
 	})
+
 	log.Print("サーバスタート")
 	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
 		log.Fatal(err)
