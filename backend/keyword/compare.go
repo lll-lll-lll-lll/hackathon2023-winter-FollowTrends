@@ -2,6 +2,7 @@ package keyword
 
 import (
 	"errors"
+	"log"
 )
 
 type Item struct {
@@ -10,13 +11,13 @@ type Item struct {
 }
 
 // Compare 一番マッチした
-func Compare(lineMessageKeyWords [][]string, searchTerms []string) (int, error) {
+func Compare(dbKeyWords [][]string, lineKeyWords []string) (int, error) {
 	// 各データ配列ごとに、検索条件に一致した要素の数を格納する配列を初期化する
-	matchCounts := make([]int, len(lineMessageKeyWords))
+	matchCounts := make([]int, len(dbKeyWords))
 
 	// データ配列をループし、各要素が検索条件に含まれるかどうかを確認し、一致する要素があれば、対応するmatchCountsの要素を1つ増やす
-	for i, d := range lineMessageKeyWords {
-		for _, term := range searchTerms {
+	for i, d := range dbKeyWords {
+		for _, term := range lineKeyWords {
 			if contains(d, term) {
 				matchCounts[i]++
 			}
@@ -32,6 +33,7 @@ func Compare(lineMessageKeyWords [][]string, searchTerms []string) (int, error) 
 			maxCountIndex = i
 		}
 	}
+	log.Println(matchCounts)
 
 	// マッチしたカウント最大の値が 0 以上かどうかを判定しておく
 	if maxCount >= 0 {
