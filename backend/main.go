@@ -71,6 +71,8 @@ func main() {
 
 					// 自動生成されたキーワード一覧
 					splitedGeneratedWord := openai.SplitWord(keyWords.Choices[0].Text)
+					log.Println("splitedKeyWords", splitedKeyWords)
+					log.Println("splitedGeneratedWord", splitedGeneratedWord)
 
 					idx, err := keyword.Compare(splitedKeyWords, splitedGeneratedWord)
 					if err != nil {
@@ -85,11 +87,8 @@ func main() {
 					}
 
 					if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(data[idx].URL)).Do(); err != nil {
-						if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(keyWords.Choices[0].Text)).Do(); err != nil {
-							log.Print(err)
-							return
-						}
-
+						log.Println(err)
+						return
 					}
 				case *linebot.StickerMessage:
 					replyMessage := fmt.Sprintf("ステキなスタンプをありがとうございます。")

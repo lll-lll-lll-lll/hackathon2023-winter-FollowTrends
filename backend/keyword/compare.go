@@ -45,6 +45,7 @@ func Compare(dbKeyWords [][]string, lineKeyWords []string) (int, error) {
 
 func contains(slice []string, item string) bool {
 	for _, s := range slice {
+		log.Println("s==item", s, item)
 		if s == item {
 			return true
 		}

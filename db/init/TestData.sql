@@ -15,7 +15,7 @@ INSERT INTO
     TEST_DATA
 VALUES
     (
-        'アメリカン・ニューシネマ,アーサー・ペン監督,青春群像劇,『アリスのレストラン』,Blu-ray',
+        'アメリカン・ニューシネマ,アーサー・ペン監督,青春群像劇,『アリスのレストラン』,Blu-ray, Apple, Mac, iPhone, iPhone X',
         'https://prtimes.jp/main/html/rd/p/000001180.000031422.html'
     );
 
