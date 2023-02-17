@@ -93,6 +93,9 @@ func main() {
 		}
 	})
 
+	http.HandleFunc("/notify", func(w http.ResponseWriter, req *http.Request) {
+	})
+
 	log.Print("サーバスタート")
 	if err := http.ListenAndServe(":"+os.Getenv("PORT"), nil); err != nil {
 		log.Fatal(err)
