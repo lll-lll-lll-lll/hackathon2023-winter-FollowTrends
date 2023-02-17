@@ -15,7 +15,7 @@ INSERT INTO
     TEST_DATA
 VALUES
     (
-        'アメリカン・ニューシネマ,アーサー・ペン監督,青春群像劇,『アリスのレストラン』,Blu-ray',
+        'アメリカン・ニューシネマ,アーサー・ペン監督,青春群像劇,『アリスのレストラン』,Blu-ray, Apple, Mac, iPhone, iPhone X',
         'https://prtimes.jp/main/html/rd/p/000001180.000031422.html'
     );
 
@@ -81,4 +81,10 @@ VALUES
     (
         'GeForce RTX™ 4070 Ti,NVIDIA Ada Lovelaceアーキテクチャ,RTコア,Tensorコア,ストリーミングマルチプロセッサー,レイトレーシング,AI,GDDR6X',
         'https://platform.openai.com/playground?model=text-davinci-003'
+    );
+
+VALUES
+    (
+        "smalia, スマートリモコン, 赤外線リモコン, Apple Watch専用アプリ, 家電操作, 温度確認＆エアコン調整, ラトックシステム, 2.4GHz/5GHz両対応, USB Type-C電源ケーブル",
+        'https://prtimes.jp/main/html/rd/p/000000212.000023921.html'
     );

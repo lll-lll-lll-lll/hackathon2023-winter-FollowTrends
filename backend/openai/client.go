@@ -32,8 +32,10 @@ func (oa *OpenAI) GenerateSentence(message string) (gogpt.CompletionResponse, er
 	ctx := context.Background()
 	req := gogpt.CompletionRequest{
 		Model:     gogpt.GPT3TextDavinci003,
-		MaxTokens: 120,
+		MaxTokens: 300,
 		Prompt:    message,
+		// ランダムな文章を生成したいので、1に近づけた
+		Temperature: 0.69,
 	}
 	resp, err := oa.Client.CreateCompletion(ctx, req)
 	if err != nil {
@@ -47,8 +49,12 @@ func (oa *OpenAI) ExtractKeyWords(text string) (gogpt.CompletionResponse, error)
 	ctx := context.Background()
 	req := gogpt.CompletionRequest{
 		Model:     gogpt.GPT3TextDavinci003,
-		MaxTokens: 64,
-		Prompt:    fmt.Sprintf("%s %s", ExtractKeyWordsHead, text),
+		MaxTokens: 100,
+		// キーワードのランダム性を抑えるために0に近づけた
+		Temperature: 0.2,
+		// 同じようなキーワードを抽出させないために2に近づけた
+		FrequencyPenalty: 1.5,
+		Prompt:           fmt.Sprintf("%s %s", ExtractKeyWordsHead, text),
 	}
 	resp, err := oa.Client.CreateCompletion(ctx, req)
 	if err != nil {
