@@ -125,6 +125,23 @@ func main() {
 	})
 
 	http.HandleFunc("/notify", func(w http.ResponseWriter, req *http.Request) {
+		items, _ := prtimesClient.GetItems("2")
+
+		// メッセージを作成
+		messages := []linebot.SendingMessage{
+				linebot.NewTextMessage("ジョルジョル星人だよ"),
+				linebot.NewTextMessage(items[0].String()),
+		}
+
+		// ブロードキャストメッセージを作成
+		broadcast := bot.BroadcastMessage(messages...)
+
+		// APIリクエストを送信
+		if _, err = broadcast.Do(); err != nil {
+				fmt.Println(err)
+				return
+		}
+		fmt.Println("Broadcast message sent successfully!")
 	})
 
 	log.Print("サーバスタート")
